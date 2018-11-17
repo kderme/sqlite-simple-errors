@@ -22,6 +22,7 @@ data Constraint = NotNull
                 | ForeignKey
                 | Unique
                 | Check
+                | UnknownConstraintError
   deriving (Show, Eq)
 
 -- | SQLiteResponse is a wrapper around the different kinds of errors that can

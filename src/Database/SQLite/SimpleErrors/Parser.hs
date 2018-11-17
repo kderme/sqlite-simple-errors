@@ -41,12 +41,16 @@ parseConstraintNoDetails :: String -> Constraint -> SQLiteParser
 parseConstraintNoDetails n c =
   constraintNameOnly n >> return (SQLConstraintError c Text.empty)
 
+parseOtherConstraint :: SQLiteParser
+parseOtherConstraint = SQLConstraintError UnknownConstraintError <$> getRest
+
 constraintParser :: Parsec Text () SQLiteResponse
 constraintParser =
   parseConstraintNoDetails "FOREIGN KEY" ForeignKey <|>
   parseConstraint "NOT NULL"    NotNull             <|>
   parseConstraint "UNIQUE"      Unique              <|>
-  parseConstraint "CHECK"       Check
+  parseConstraint "CHECK"       Check               <|>
+  parseOtherConstraint
 
 parseError :: SQLError -> SQLiteResponse
 parseError e@SQLError{sqlErrorDetails = details} =
